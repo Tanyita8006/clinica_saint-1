@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import SavingsIcon from '@mui/icons-material/Savings';
 import {
   ExpandLess,
   ExpandMore,
@@ -306,6 +307,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
               selectedPage === "CAJA (FACTURACION)" ||
               selectedPage === "ANULACION DE DOCUMENTO" ||
               selectedPage === "ANTICIPOS" ||
+              selectedPage === "ABONO" ||
               selectedPage === "ESTADO DE CUENTAS" ||
               selectedPage === "VENTAS" ||
               selectedPage === "CARTERA" ||
@@ -403,6 +405,35 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
                   primaryTypographyProps={{ fontSize: "14px" }}
                 />
               </StyledListItemButton>
+              {/* ABONO debajo de ANTICIPOS */}
+              <StyledListItemButton
+                sx={{ pl: 4 }}
+                onClick={() => handlePageSelect("ABONO")}
+                selected={selectedPage === "ABONO"}
+              >
+                <ListItemIcon>
+                  <SavingsIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="ABONO"
+                  primaryTypographyProps={{ fontSize: "14px" }}
+                />
+              </StyledListItemButton>
+              
+              <StyledListItemButton
+                sx={{ pl: 4 }}
+                onClick={() => handlePageSelect("REPORTERIA")}
+                selected={selectedPage === "REPORTERIA"}
+              >
+                <ListItemIcon>
+                  <ReportIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="REPORTERIA"
+                  primaryTypographyProps={{ fontSize: "14px" }}
+                />
+              </StyledListItemButton>
+              
               <StyledListItemButton
                 sx={{ pl: 4 }}
                 onClick={() => handlePageSelect("ESTADO DE CUENTAS")}

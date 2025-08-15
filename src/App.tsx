@@ -11,6 +11,14 @@ import Camas from "./pages/Camas/CamasPage";
 import Admision from "./pages/Facturacion/Admision/Admision";
 import TarifarioMenu from "./pages/Facturacion/Tarifario/TarifarioMenu";
 import ServiciosAmbulatorio from "./pages/ServiciosAmbulatorios/ServiciosAmbulatorio";
+import Caja from "./pages/Facturacion/Caja/Caja";
+import Autorizacion from "./pages/Facturacion/Autorizacion/Autorizacion";
+import Anticpos from "./pages/Facturacion/Anticipos/Anticpos";
+import Anticipo from "./pages/Facturacion/Caja/FormasPago/Anticipo";
+import Anticipos from "./pages/Facturacion/Anticipos/Anticpos";
+import Abono from "./pages/Facturacion/Abono/Abono";
+import Reporteria from "./pages/Facturacion/Reporteria/Reporteria";
+import CierreCaja from "./pages/Facturacion/CierreCaja/CierreCaja";
 
 const theme = createTheme();
 
@@ -140,7 +148,19 @@ const App: React.FC = () => {
       case "TARIFARIO":
         return <TarifarioMenu />; // <-- Agrega esta línea
       case "SERVICIOS AMBULATORIOS":
-        return <ServiciosAmbulatorio />; // <-- Agrega esta línea
+        return <ServiciosAmbulatorio />;
+        case "AUTORIZACION (CREDITO / DESCUENTO)":
+        return <Autorizacion />;
+      case "CAJA (FACTURACION)":
+        return <Caja />;
+      case "ANTICIPOS":
+        return <Anticipos />;
+      case "ABONO":
+        return <Abono />;
+      case "REPORTERIA":
+        return <Reporteria />;
+      case "CIERRE DE CAJA":
+        return <CierreCaja />;  
       default:
         return <Typography>Selecciona una opción del menú</Typography>;
     }

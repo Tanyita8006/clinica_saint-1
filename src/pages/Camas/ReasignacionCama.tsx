@@ -24,7 +24,7 @@ interface ReasignacionCamaProps {
   handleClose: () => void;
   handleSelectChange: (
     event: SelectChangeEvent<string>,
-    child: React.ReactNode
+    child: React.ReactNode,
   ) => void;
   handleInputChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

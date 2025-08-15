@@ -32,7 +32,6 @@ import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import VaccinesIcon from '@mui/icons-material/Vaccines';
 
 interface MedicamentoData {
   fecha: string;
@@ -42,15 +41,13 @@ interface MedicamentoData {
   cadaCuantasHoras: string;
   frecuencia: string;
   horaInicio: string;
+  responsable: string;
 }
 
 interface MedicamentoRegistrado extends MedicamentoData {
   id: number;
   fechaRegistro: string;
   estado: 'ACTIVO' | 'SUSPENDIDO' | 'COMPLETADO';
-  responsable: string;
-  esTermino?: boolean;
-  idIngreso?: number; // Relaciona con el id de ingreso
 }
 
 interface MedicamentoItem {
@@ -60,10 +57,14 @@ interface MedicamentoItem {
   concentracion: string;
 }
 
-export default function Medicamento() {
-  // Simulación de usuario logueado
-  const usuarioLogueado = "LCDO/A (logeado)";
+interface ResponsableItem {
+  id: number;
+  nombre: string;
+  cargo: string;
+  cedula: string;
+}
 
+export default function Medicamento() {
   const [medicamentoData, setMedicamentoData] = useState<MedicamentoData>({
     fecha: '',
     medicamentos: [],
@@ -72,6 +73,7 @@ export default function Medicamento() {
     cadaCuantasHoras: '',
     frecuencia: '',
     horaInicio: '',
+    responsable: '',
   });
 
   const [medicamentosRegistrados, setMedicamentosRegistrados] = useState<MedicamentoRegistrado[]>([]);
@@ -100,6 +102,18 @@ export default function Medicamento() {
     { codigo: 'ID', nombre: 'Intradérmico' },
     { codigo: 'SC', nombre: 'Subcutáneo' },
     { codigo: 'V.O', nombre: 'Vía Oral' },
+  ];
+
+  // Lista de responsables (personal de enfermería y médicos)
+  const responsablesDisponibles: ResponsableItem[] = [
+    { id: 1, nombre: 'DRA. MARÍA GARCÍA', cargo: 'Médico Tratante', cedula: '0912345678' },
+    { id: 2, nombre: 'ENF. JUAN PÉREZ', cargo: 'Enfermero Jefe', cedula: '0923456789' },
+    { id: 3, nombre: 'ENF. LUCÍA MORALES', cargo: 'Enfermera', cedula: '0934567890' },
+    { id: 4, nombre: 'DR. CARLOS LÓPEZ', cargo: 'Médico Residente', cedula: '0945678901' },
+    { id: 5, nombre: 'ENF. ANA TORRES', cargo: 'Enfermera', cedula: '0956789012' },
+    { id: 6, nombre: 'ENF. PEDRO SILVA', cargo: 'Enfermero', cedula: '0967890123' },
+    { id: 7, nombre: 'DRA. SOFÍA RUIZ', cargo: 'Médico Especialista', cedula: '0978901234' },
+    { id: 8, nombre: 'ENF. CARMEN VEGA', cargo: 'Enfermera Supervisora', cedula: '0989012345' },
   ];
 
   // Estilos comunes
@@ -141,12 +155,14 @@ export default function Medicamento() {
 
   const calcularFrecuenciaAutomatica = (horas: string) => {
     if (!horas || isNaN(Number(horas))) return '';
+    
     const horasNum = Number(horas);
     if (horasNum === 8) return '3 veces al día';
     if (horasNum === 12) return '2 veces al día';
     if (horasNum === 24) return '1 vez al día';
     if (horasNum === 6) return '4 veces al día';
     if (horasNum === 4) return '6 veces al día';
+    
     return `Cada ${horas} horas`;
   };
 
@@ -155,26 +171,37 @@ export default function Medicamento() {
       setErrorMessage('La fecha es obligatoria');
       return false;
     }
+
     if (medicamentoData.medicamentos.length === 0) {
       setErrorMessage('Debe seleccionar al menos un medicamento');
       return false;
     }
+
     if (!medicamentoData.dosis.trim()) {
       setErrorMessage('La dosis es obligatoria');
       return false;
     }
+
     if (!medicamentoData.via) {
       setErrorMessage('La vía de administración es obligatoria');
       return false;
     }
+
     if (!medicamentoData.cadaCuantasHoras) {
       setErrorMessage('Debe especificar cada cuántas horas');
       return false;
     }
+
     if (!medicamentoData.horaInicio) {
       setErrorMessage('La hora de inicio es obligatoria');
       return false;
     }
+
+    if (!medicamentoData.responsable) {
+      setErrorMessage('Debe seleccionar un responsable');
+      return false;
+    }
+
     return true;
   };
 
@@ -193,6 +220,7 @@ export default function Medicamento() {
       cadaCuantasHoras: '',
       frecuencia: '',
       horaInicio: '',
+      responsable: '',
     });
     setEditingId(null);
   };
@@ -202,46 +230,35 @@ export default function Medicamento() {
 
     const fechaRegistro = new Date().toLocaleString('es-EC');
 
-    // Por cada medicamento seleccionado, crear una fila de ingreso
-    const nuevosMedicamentos: MedicamentoRegistrado[] = medicamentoData.medicamentos.map((med, idx) => ({
-      ...medicamentoData,
-      medicamentos: [med],
-      id: Date.now() + idx,
-      fechaRegistro,
-      estado: 'ACTIVO',
-      responsable: usuarioLogueado,
-      esTermino: false,
-    }));
+    if (editingId) {
+      // Editar medicamento existente
+      setMedicamentosRegistrados(prev => 
+        prev.map(med => 
+          med.id === editingId 
+            ? { ...medicamentoData, id: editingId, fechaRegistro: med.fechaRegistro, estado: med.estado as any }
+            : med
+        )
+      );
+      setSuccessMessage('Medicamento actualizado correctamente');
+    } else {
+      // Agregar nuevo medicamento
+      const nuevoMedicamento: MedicamentoRegistrado = {
+        ...medicamentoData,
+        id: Date.now(),
+        fechaRegistro,
+        estado: 'ACTIVO',
+      };
 
-    setMedicamentosRegistrados(prev => [...prev, ...nuevosMedicamentos]);
-    setSuccessMessage('Medicamento(s) registrado(s) correctamente');
+      setMedicamentosRegistrados(prev => [...prev, nuevoMedicamento]);
+      setSuccessMessage('Medicamento registrado correctamente');
+    }
+
     limpiarFormulario();
     setErrorMessage('');
+    
     setTimeout(() => {
       setSuccessMessage('');
     }, 3000);
-  };
-
-  const handleAgregarTermino = (medicamento: MedicamentoRegistrado) => {
-    // Solo agregar si no existe ya un término para este ingreso
-    const yaExiste = medicamentosRegistrados.some(
-      m => m.idIngreso === medicamento.id && m.esTermino
-    );
-    if (yaExiste) return;
-
-    const fechaRegistro = new Date().toLocaleString('es-EC');
-    const nuevoTermino: MedicamentoRegistrado = {
-      ...medicamento,
-      id: Date.now(),
-      fechaRegistro,
-      estado: 'COMPLETADO',
-      responsable: usuarioLogueado,
-      esTermino: true,
-      idIngreso: medicamento.id,
-    };
-    setMedicamentosRegistrados(prev => [...prev, nuevoTermino]);
-    setSuccessMessage('Término de medicamento registrado');
-    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
   const handleEditar = (medicamento: MedicamentoRegistrado) => {
@@ -253,6 +270,7 @@ export default function Medicamento() {
       cadaCuantasHoras: medicamento.cadaCuantasHoras,
       frecuencia: medicamento.frecuencia,
       horaInicio: medicamento.horaInicio,
+      responsable: medicamento.responsable,
     });
     setEditingId(medicamento.id);
     setErrorMessage('');
@@ -261,41 +279,20 @@ export default function Medicamento() {
 
   const handleEliminar = (id: number) => {
     if (window.confirm('¿Está seguro de eliminar este medicamento?')) {
-      setMedicamentosRegistrados(prev => prev.filter(med => med.id !== id && med.idIngreso !== id));
+      setMedicamentosRegistrados(prev => prev.filter(med => med.id !== id));
       setSuccessMessage('Medicamento eliminado correctamente');
       setTimeout(() => setSuccessMessage(''), 3000);
     }
   };
 
   const cambiarEstado = (id: number, nuevoEstado: 'ACTIVO' | 'SUSPENDIDO' | 'COMPLETADO') => {
-    setMedicamentosRegistrados(prev =>
-      prev.map(med =>
+    setMedicamentosRegistrados(prev => 
+      prev.map(med => 
         med.id === id ? { ...med, estado: nuevoEstado } : med
       )
     );
     setSuccessMessage(`Medicamento ${nuevoEstado.toLowerCase()}`);
     setTimeout(() => setSuccessMessage(''), 3000);
-  };
-
-  // Cambia el estado a 'SUSPENDIDO' y colorea la fila de rojo
-  const handleSuspender = (id: number) => {
-    setMedicamentosRegistrados(prev =>
-      prev.map(med =>
-        med.id === id ? { ...med, estado: 'SUSPENDIDO' } : med
-      )
-    );
-    setSuccessMessage('Medicamento suspendido');
-    setTimeout(() => setSuccessMessage(''), 3000);
-  };
-
-  // Determina el color de la fila según el estado y si tiene término
-  const getRowColor = (med: MedicamentoRegistrado) => {
-    if (med.estado === 'SUSPENDIDO') return '#FFCDD2'; // rojo claro
-    const tieneTermino = medicamentosRegistrados.some(
-      m => m.idIngreso === med.id && m.esTermino
-    );
-    if (med.esTermino || tieneTermino) return '#C8E6C9'; // verde claro
-    return '#ECECEC'; // gris claro
   };
 
   const getViaCompleta = (codigo: string) => {
@@ -365,10 +362,10 @@ export default function Medicamento() {
         </Typography>
 
         {/* Fila 1: Fecha, Responsable y Medicamentos */}
-        <Box sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
+        <Box sx={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: 2, 
           mb: 3,
           alignItems: 'flex-start'
         }}>
@@ -387,15 +384,24 @@ export default function Medicamento() {
           </Box>
 
           <Box sx={{ flex: '1 1 250px', minWidth: '200px' }}>
-            <TextField
-              label="RESPONSABLE"
-              value={usuarioLogueado}
-              disabled
-              {...textFieldProps}
-              InputProps={{
-                ...textFieldProps.InputProps,
-                startAdornment: <PersonIcon sx={{ mr: 1, fontSize: 16, color: '#9C27B0' }} />
-              }}
+            <Autocomplete
+              options={responsablesDisponibles.map(resp => `${resp.nombre} - ${resp.cargo}`)}
+              value={medicamentoData.responsable}
+              onChange={(event, newValue) => handleInputChange('responsable', newValue || '')}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="RESPONSABLE *"
+                  placeholder="Seleccione el responsable"
+                  {...textFieldProps}
+                  InputProps={{
+                    ...params.InputProps,
+                    style: { ...textFieldProps.InputProps.style },
+                    startAdornment: <PersonIcon sx={{ mr: 1, fontSize: 16, color: '#9C27B0' }} />
+                  }}
+                />
+              )}
+              size="small"
             />
           </Box>
 
@@ -434,10 +440,10 @@ export default function Medicamento() {
         </Box>
 
         {/* Fila 2: Dosis y Vía */}
-        <Box sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
+        <Box sx={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: 2, 
           mb: 3,
           alignItems: 'flex-end'
         }}>
@@ -475,10 +481,10 @@ export default function Medicamento() {
         </Box>
 
         {/* Fila 3: Frecuencia y Horarios */}
-        <Box sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
+        <Box sx={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: 2, 
           mb: 3,
           alignItems: 'flex-end'
         }}>
@@ -562,112 +568,97 @@ export default function Medicamento() {
             MEDICAMENTOS REGISTRADOS ({medicamentosRegistrados.length})
           </Typography>
         </Box>
+
         <TableContainer>
           <Table size="small">
             <TableHead>
               <TableRow sx={{ backgroundColor: '#F5F5F5' }}>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>FECHA</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>RESPONSABLE</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>MEDICAMENTO</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>MEDICAMENTOS</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>DOSIS</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>VÍA</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>FRECUENCIA</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>INICIO</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>ESTADO</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: 11 }}>ACCIONES</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {medicamentosRegistrados
-                .sort((a, b) => (a.esTermino ? 1 : -1)) // Mostrar ingreso antes que término
-                .map((medicamento) => {
-                  const rowColor = getRowColor(medicamento);
-                  const tieneTermino = medicamentosRegistrados.some(
-                    m => m.idIngreso === medicamento.id && m.esTermino
-                  );
-                  // Solo mostrar acciones si la fila es gris (no suspendido ni completado)
-                  const mostrarAcciones =
-                    medicamento.estado !== 'SUSPENDIDO' &&
-                    !medicamento.esTermino &&
-                    !tieneTermino;
-
-                  return (
-                    <TableRow
-                      key={medicamento.id}
-                      hover
-                      sx={{
-                        backgroundColor: rowColor,
-                        transition: 'background 0.3s',
-                        opacity: medicamento.estado === 'SUSPENDIDO' ? 0.7 : 1,
-                      }}
-                    >
-                      <TableCell sx={{ fontSize: 11 }}>{medicamento.fecha}</TableCell>
-                      <TableCell sx={{ fontSize: 11 }}>
-                        <Box>
-                          <Typography variant="caption" sx={{ fontWeight: 'bold', color: '#9C27B0', fontSize: 10 }}>
-                            {medicamento.responsable}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell sx={{ fontSize: 11 }}>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {medicamento.medicamentos.map((med, index) => (
-                            <Chip
-                              key={index}
-                              label={med.split(' - ')[0]}
-                              size="small"
-                              variant="outlined"
-                              color={medicamento.esTermino ? "default" : "primary"}
-                              sx={{ fontSize: 9 }}
-                            />
-                          ))}
-                        </Box>
-                      </TableCell>
-                      <TableCell sx={{ fontSize: 11, fontWeight: 'bold', color: '#4CAF50' }}>
-                        {medicamento.dosis}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: 11 }}>{medicamento.via}</TableCell>
-                      <TableCell sx={{ fontSize: 11 }}>{medicamento.frecuencia}</TableCell>
-                      <TableCell sx={{ fontSize: 11 }}>{medicamento.horaInicio}</TableCell>
-                      <TableCell sx={{ fontSize: 11 }}>
-                        {mostrarAcciones && (
-                          <Box sx={{ display: 'flex', gap: 0.5 }}>
-                            <Tooltip title="Registrar término">
-                              <IconButton
-                                size="small"
-                                color="info"
-                                onClick={() => handleAgregarTermino(medicamento)}
-                                disabled={tieneTermino}
-                              >
-                                <VaccinesIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Editar">
-                              <IconButton
-                                size="small"
-                                color="primary"
-                                onClick={() => handleEditar(medicamento)}
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Suspender">
-                              <IconButton
-                                size="small"
-                                color="error"
-                                onClick={() => handleSuspender(medicamento.id)}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+              {medicamentosRegistrados.map((medicamento) => (
+                <TableRow key={medicamento.id} hover>
+                  <TableCell sx={{ fontSize: 11 }}>{medicamento.fecha}</TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>
+                    <Box>
+                      <Typography variant="caption" sx={{ fontWeight: 'bold', color: '#9C27B0', fontSize: 10 }}>
+                        {getResponsableInfo(medicamento.responsable).nombre}
+                      </Typography>
+                      <Typography variant="caption" sx={{ display: 'block', color: '#666', fontSize: 9 }}>
+                        {getResponsableInfo(medicamento.responsable).cargo}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {medicamento.medicamentos.map((med, index) => (
+                        <Chip
+                          key={index}
+                          label={med.split(' - ')[0]}
+                          size="small"
+                          variant="outlined"
+                          color="primary"
+                          sx={{ fontSize: 9 }}
+                        />
+                      ))}
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: 11, fontWeight: 'bold', color: '#4CAF50' }}>
+                    {medicamento.dosis}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>{medicamento.via}</TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>{medicamento.frecuencia}</TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>{medicamento.horaInicio}</TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>
+                    <FormControl size="small" sx={{ minWidth: 100 }}>
+                      <Select
+                        value={medicamento.estado}
+                        onChange={(e) => cambiarEstado(medicamento.id, e.target.value as any)}
+                        size="small"
+                        sx={{ fontSize: 10 }}
+                      >
+                        <MenuItem value="ACTIVO">ACTIVO</MenuItem>
+                        <MenuItem value="SUSPENDIDO">SUSPENDIDO</MenuItem>
+                        <MenuItem value="COMPLETADO">COMPLETADO</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: 11 }}>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <Tooltip title="Editar">
+                        <IconButton 
+                          size="small" 
+                          color="primary"
+                          onClick={() => handleEditar(medicamento)}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Eliminar">
+                        <IconButton 
+                          size="small" 
+                          color="error"
+                          onClick={() => handleEliminar(medicamento.id)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
               {medicamentosRegistrados.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} sx={{ textAlign: 'center', py: 3 }}>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 3 }}>
                     <Typography variant="body2" color="textSecondary">
                       No hay medicamentos registrados
                     </Typography>

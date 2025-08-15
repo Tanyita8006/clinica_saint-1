@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Typography,
-  Grid,
   TextField,
   FormControl,
   InputLabel,
@@ -19,11 +18,11 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 
 const nacionalidades = [
-  "Ecuatoriana",
-  "Colombiana",
-  "Peruana",
-  "Venezolana",
-  "Otra",
+  "ECUATORIANA",
+  "COLOMBIANA",
+  "PERUANA",
+  "VENEZOLANA",
+  "OTRA",
 ];
 
 const estadosCiviles = [
@@ -36,19 +35,19 @@ const estadosCiviles = [
 ];
 
 const tiposIdentificacion = [
-  "Cédula",
-  "Pasaporte",
-  "Carnet/refugiado",
-  "Sin documento",
+  "CÉDULA",
+  "PASAPORTE",
+  "CARNET/REFUGIADO",
+  "SIN DOCUMENTO",
 ];
 
 const nivelesEducacion = ["PRIMARIA", "SECUNDARIA", "SUPERIOR", "NINGUNO"];
 
 const estadoNivelEducacion = ["TERMINADO", "EN CURSO"];
 
-const tiposEmpresa = ["Pública", "Privada"];
+const tiposEmpresa = ["PÚBLICA", "PRIVADA"];
 
-const segurosSalud = ["ISSPOL", "ISSFA", "Privado", "Ninguno"];
+const segurosSalud = ["ISSPOL", "ISSFA", "PRIVADO", "NINGUNO"];
 
 const parentescos = [
   "HIJO(A)",
@@ -67,7 +66,7 @@ const parentescos = [
   "OTROS",
 ];
 
-const formasLlegada = ["Ambulatorio", "Ambulancia", "Otro transporte"];
+const formasLlegada = ["AMBULATORIO", "AMBULANCIA", "OTRO TRANSPORTE"];
 
 const categoriasConvenio = [
   "PARTICULARES",
@@ -81,36 +80,36 @@ const categoriasConvenio = [
 
 const convenios = ["LATINA PREPAGADA", "LATINA SEGUROS", "PAN AMERICAN LIFE"];
 
-// Define un tamaño estándar para todos los TextField
+// Se han reducido los tamaños de fuente y la altura de los inputs (de 15 a 13 y de 40 a 35 px respectivamente)
 const textFieldProps = {
   size: "small" as const,
   fullWidth: true,
-  InputProps: { style: { fontSize: 15, height: 40 } },
-  InputLabelProps: { style: { fontSize: 15 } },
+  InputProps: { style: { fontSize: 13, height: 35 } },
+  InputLabelProps: { style: { fontSize: 13 } },
 };
 
-// Props estándar para Select y FormControl para igualar el porte de los TextField y hacerlos largos
 const selectProps = {
   size: "small" as const,
   fullWidth: true,
-  sx: { fontSize: 15, height: 40, minHeight: 40, minWidth: 220 }, // minWidth grande para ver bien el label
-  MenuProps: { PaperProps: { style: { fontSize: 15 } } },
+  sx: { fontSize: 13, height: 35, minHeight: 35, minWidth: 220 },
+  MenuProps: { PaperProps: { style: { fontSize: 13 } } },
 };
+
 const formControlProps = {
   size: "small" as const,
   fullWidth: true,
-  sx: { minHeight: 40, minWidth: 220 }, // minWidth grande para ver bien el label
+  sx: { minHeight: 35, minWidth: 220 },
 };
 
 const Admision: React.FC = () => {
-  // Estado para Extranjero y Nacionalidad
+  // ESTADO PARA EXTRANJERO Y NACIONALIDAD
   const [esExtranjero, setEsExtranjero] = useState(false);
-  const [nacionalidad, setNacionalidad] = useState("Ecuatoriana");
-  // Estado para Fecha de Nacimiento y Edad
+  const [nacionalidad, setNacionalidad] = useState("ECUATORIANA");
+  // ESTADO PARA FECHA DE NACIMIENTO Y EDAD
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [edad, setEdad] = useState("");
 
-  // Calcular edad automáticamente al cambiar la fecha de nacimiento
+  // CALCULAR EDAD AUTOMÁTICAMENTE AL CAMBIAR LA FECHA DE NACIMIENTO
   const handleFechaNacimiento = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fecha = e.target.value;
     setFechaNacimiento(fecha);
@@ -154,51 +153,63 @@ const Admision: React.FC = () => {
         </Typography>
 
         {/* DATOS IDENTIFICATORIOS */}
-        <SectionTitle title="Datos Identificatorios" />
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Apellido Paterno" required {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Apellido Materno" required {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Primer Nombre" required {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Segundo Nombre" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Historia Clínica" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
+        <SectionTitle title="DATOS IDENTIFICATORIOS" />
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "1 1 200px" }}>
             <TextField
-              label="Cédula"
+              label="APELLIDO PATERNO"
+              required
+              {...textFieldProps}
+            />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField
+              label="APELLIDO MATERNO"
+              required
+              {...textFieldProps}
+            />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField
+              label="PRIMER NOMBRE"
+              required
+              {...textFieldProps}
+            />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="SEGUNDO NOMBRE" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
+            <TextField label="HISTORIA CLÍNICA" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
+            <TextField
+              label="CÉDULA / PASAPORTE"
               {...textFieldProps}
               InputProps={{
                 ...textFieldProps.InputProps,
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="buscar por cédula">
+                    <IconButton aria-label="BUSCAR POR CÉDULA">
                       <SearchIcon />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
-          </Grid>
-          <Grid item xs={12} sm={3}>
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
             <FormControl fullWidth size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Sexo</InputLabel>
-              <Select label="Sexo" sx={{ minWidth: 120 }}>
-                <MenuItem value="M">Masculino</MenuItem>
-                <MenuItem value="F">Femenino</MenuItem>
+              <InputLabel>SEXO</InputLabel>
+              <Select label="SEXO" sx={{ minWidth: 120 }}>
+                <MenuItem value="M">MASCULINO</MenuItem>
+                <MenuItem value="F">FEMENINO</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3}>
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
             <TextField
-              label="Fecha de Nacimiento"
+              label="FECHA DE NACIMIENTO"
               type="date"
               {...textFieldProps}
               InputLabelProps={{
@@ -208,50 +219,48 @@ const Admision: React.FC = () => {
               value={fechaNacimiento}
               onChange={handleFechaNacimiento}
             />
-          </Grid>
-          <Grid item xs={12} sm={1}>
+          </Box>
+          <Box sx={{ flex: "0 1 80px" }}>
             <TextField
-              label="Edad"
+              label="EDAD"
               {...textFieldProps}
               sx={{ maxWidth: 80 }}
               value={edad}
               disabled
             />
-          </Grid>
-          <Grid item xs={12} sm={1}>
-            <FormControlLabel control={<Checkbox />} label="Aprox." />
-          </Grid>
-          <Grid item xs={12} sm={1}>
+          </Box>
+          <Box sx={{ flex: "0 1 80px", display: "flex", alignItems: "center" }}>
+            <FormControlLabel control={<Checkbox />} label="ADULTO" />
+          </Box>
+          <Box sx={{ flex: "0 1 80px", display: "flex", alignItems: "center" }}>
             <FormControlLabel control={<Checkbox />} label="RN" />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
-        {/* PACIENTES EXISTENTES */}
-        <SectionTitle title="Provincia, Cantón y Parroquia" />
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          {/* Extranjero como checkbox */}
-          <Grid item xs={12} sm={2}>
+        {/* PROVINCIA, CANTÓN Y PARROQUIA */}
+        <SectionTitle title="PROVINCIA, CANTÓN Y PARROQUIA" />
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "0 1 150px", display: "flex", alignItems: "center" }}>
             <FormControlLabel
               control={
                 <Checkbox
                   checked={esExtranjero}
                   onChange={(_, checked) => {
                     setEsExtranjero(checked);
-                    setNacionalidad(checked ? "" : "Ecuatoriana");
+                    setNacionalidad(checked ? "" : "ECUATORIANA");
                   }}
                 />
               }
-              label="Extranjero"
+              label="EXTRANJERO"
             />
-          </Grid>
-          {/* Nacionalidad habilitada solo si es extranjero */}
-          <Grid item xs={12} sm={2}>
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
             <FormControl {...formControlProps} disabled={!esExtranjero}>
-              <InputLabel>Nacionalidad</InputLabel>
+              <InputLabel>NACIONALIDAD</InputLabel>
               <Select
-                label="Nacionalidad"
+                label="NACIONALIDAD"
                 {...selectProps}
-                value={esExtranjero ? nacionalidad : "Ecuatoriana"}
+                value={esExtranjero ? nacionalidad : "ECUATORIANA"}
                 onChange={(e) => setNacionalidad(e.target.value)}
               >
                 {nacionalidades.map((nac) => (
@@ -261,42 +270,38 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          {/* País */}
-          <Grid item xs={12} sm={2}>
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
             <FormControl fullWidth size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>País</InputLabel>
-              <Select label="País" sx={{ minWidth: 120 }}>
-                <MenuItem value="ECUADOR">Ecuador</MenuItem>
-                <MenuItem value="OTRO">Otro</MenuItem>
+              <InputLabel>PAÍS</InputLabel>
+              <Select label="PAÍS" sx={{ minWidth: 120 }}>
+                <MenuItem value="ECUADOR">ECUADOR</MenuItem>
+                <MenuItem value="OTRO">OTRO</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          {/* Provincia */}
-          <Grid item xs={12} sm={2}>
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Provincia Reside</InputLabel>
-              <Select label="Provincia Reside" {...selectProps}>
-                <MenuItem value="IMBABURA">Imbabura</MenuItem>
-                <MenuItem value="PICHINCHA">Pichincha</MenuItem>
+              <InputLabel>PROVINCIA RESIDE</InputLabel>
+              <Select label="PROVINCIA RESIDE" {...selectProps}>
+                <MenuItem value="IMBABURA">IMBABURA</MenuItem>
+                <MenuItem value="PICHINCHA">PICHINCHA</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          {/* Cantón */}
-          <Grid item xs={12} sm={2}>
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Cantón Reside</InputLabel>
-              <Select label="Cantón Reside" {...selectProps}>
-                <MenuItem value="GUAYAQUIL">Guayaquil</MenuItem>
-                <MenuItem value="OTRO">Otro</MenuItem>
+              <InputLabel>CANTÓN RESIDE</InputLabel>
+              <Select label="CANTÓN RESIDE" {...selectProps}>
+                <MenuItem value="GUAYAQUIL">GUAYAQUIL</MenuItem>
+                <MenuItem value="OTRO">OTRO</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          {/* Estado Civil */}
-          <Grid item xs={12} sm={2}>
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Estado Civil</InputLabel>
-              <Select label="Estado Civil" {...selectProps}>
+              <InputLabel>ESTADO CIVIL</InputLabel>
+              <Select label="ESTADO CIVIL" {...selectProps}>
                 {estadosCiviles.map((estado) => (
                   <MenuItem key={estado} value={estado}>
                     {estado}
@@ -304,47 +309,48 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Dirección" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Barrio/Sector" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="C. Principal" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="C. Secundaria" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Lugar Nacimiento" {...textFieldProps} />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
+
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="DIRECCIÓN" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="BARRIO/SECTOR" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="C. PRINCIPAL" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="C. SECUNDARIA" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="LUGAR NACIMIENTO" {...textFieldProps} />
+          </Box>
+        </Box>
 
         {/* TELEFONOS PACIENTES */}
-        <SectionTitle title="Teléfonos Pacientes" />
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Medio" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Número" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Observación" {...textFieldProps} />
-          </Grid>
-        </Grid>
+        <SectionTitle title="TELEFONOS PACIENTES" />
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "1 1 250px" }}>
+            <TextField label="MEDIO" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 250px" }}>
+            <TextField label="NÚMERO" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 250px" }}>
+            <TextField label="OBSERVACIÓN" {...textFieldProps} />
+          </Box>
+        </Box>
 
         {/* DATOS CONVENIOS */}
-        <SectionTitle title="Datos Convenios" />
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={4}>
+        <SectionTitle title="DATOS CONVENIOS" />
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "1 1 250px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Categoría</InputLabel>
-              <Select label="Categoría" {...selectProps}>
+              <InputLabel>CATEGORÍA</InputLabel>
+              <Select label="CATEGORÍA" {...selectProps}>
                 {categoriasConvenio.map((cat) => (
                   <MenuItem key={cat} value={cat}>
                     {cat}
@@ -352,11 +358,11 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={4}>
+          </Box>
+          <Box sx={{ flex: "1 1 250px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Convenio</InputLabel>
-              <Select label="Convenio" {...selectProps}>
+              <InputLabel>CONVENIO</InputLabel>
+              <Select label="CONVENIO" {...selectProps}>
                 {convenios.map((c) => (
                   <MenuItem key={c} value={c}>
                     {c}
@@ -364,19 +370,19 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField label="Empresa" {...textFieldProps} />
-          </Grid>
-        </Grid>
+          </Box>
+          <Box sx={{ flex: "1 1 250px" }}>
+            <TextField label="EMPRESA" {...textFieldProps} />
+          </Box>
+        </Box>
 
         {/* DATOS COMPLEMENTARIOS HOJA ADMISION */}
-        <SectionTitle title="Datos Complementarios Hoja Admisión" />
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={3}>
+        <SectionTitle title="DATOS COMPLEMENTARIOS HOJA ADMISION" />
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "1 1 200px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Nivel de Instrucción</InputLabel>
-              <Select label="Nivel de Instrucción" {...selectProps}>
+              <InputLabel>NIVEL DE INSTRUCCIÓN</InputLabel>
+              <Select label="NIVEL DE INSTRUCCIÓN" {...selectProps}>
                 {nivelesEducacion.map((nivel) => (
                   <MenuItem key={nivel} value={nivel}>
                     {nivel}
@@ -384,11 +390,11 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3}>
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Estado Nivel Educación</InputLabel>
-              <Select label="Estado Nivel Educación" {...selectProps}>
+              <InputLabel>ESTADO NIVEL EDUCACIÓN</InputLabel>
+              <Select label="ESTADO NIVEL EDUCACIÓN" {...selectProps}>
                 {estadoNivelEducacion.map((estado) => (
                   <MenuItem key={estado} value={estado}>
                     {estado}
@@ -396,17 +402,17 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3}>
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
             <TextField
-              label="Ocupación y Empresa Trabajo"
+              label="OCUPACIÓN Y EMPRESA TRABAJO"
               {...textFieldProps}
             />
-          </Grid>
-          <Grid item xs={12} sm={3}>
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Tipo Empresa</InputLabel>
-              <Select label="Tipo Empresa" {...selectProps}>
+              <InputLabel>TIPO EMPRESA</InputLabel>
+              <Select label="TIPO EMPRESA" {...selectProps}>
                 {tiposEmpresa.map((tipo) => (
                   <MenuItem key={tipo} value={tipo}>
                     {tipo}
@@ -414,43 +420,43 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Etnia" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Nacionalidad Étnica" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Pueblo" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Grupo Cultural / Zona" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Grupo Prioritario" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Tipo Bono" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Médico Tratante" {...textFieldProps} />
-          </Grid>
-        </Grid>
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="ETNIA" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="NACIONALIDAD ÉTNICA" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="PUEBLO" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="GRUPO CULTURAL / ZONA" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="GRUPO PRIORITARIO" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="TIPO BONO" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="MÉDICO TRATANTE" {...textFieldProps} />
+          </Box>
+        </Box>
 
-        {/* EN CASO NECESARIO LLAMAR A */}
-        <SectionTitle title="En caso necesario llamar a:" />
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Cédula" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField label="Nombre" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={3}>
+        {/* EN CASO NECESARIO LLAMAR A: */}
+        <SectionTitle title="EN CASO NECESARIO LLAMAR A:" />
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+          <Box sx={{ flex: "1 1 150px" }}>
+            <TextField label="CÉDULA" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="NOMBRE" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
             <FormControl {...formControlProps}>
-              <InputLabel>Afínidad</InputLabel>
-              <Select label="Afínidad" {...selectProps}>
+              <InputLabel>AFINIDAD</InputLabel>
+              <Select label="AFINIDAD" {...selectProps}>
                 {parentescos.map((par) => (
                   <MenuItem key={par} value={par}>
                     {par}
@@ -458,28 +464,28 @@ const Admision: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Dirección" {...textFieldProps} />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField label="Teléfono" {...textFieldProps} />
-          </Grid>
-        </Grid>
+          </Box>
+          <Box sx={{ flex: "1 1 200px" }}>
+            <TextField label="DIRECCIÓN" {...textFieldProps} />
+          </Box>
+          <Box sx={{ flex: "1 1 150px" }}>
+            <TextField label="TELÉFONO" {...textFieldProps} />
+          </Box>
+        </Box>
 
         {/* OPCIONES */}
         <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
           <Button variant="contained" color="primary">
-            Registrar
+            REGISTRAR
           </Button>
           <Button variant="outlined" color="primary" disabled>
-            Actualizar
+            ACTUALIZAR
           </Button>
           <Button variant="contained" color="secondary">
-            Nuevo
+            NUEVO
           </Button>
           <Button variant="outlined" color="secondary">
-            Volver
+            VOLVER
           </Button>
         </Box>
         <Box sx={{ mt: 2, textAlign: "right" }}>
@@ -492,7 +498,7 @@ const Admision: React.FC = () => {
   );
 };
 
-// Componente para el Título de Sección
+// COMPONENTE PARA EL TÍTULO DE SECCIÓN
 interface SectionTitleProps {
   title: string;
 }
@@ -503,7 +509,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
       variant="h6"
       fontWeight={700}
       color="#1A3C6D"
-      sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+      sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
     >
       {title}
     </Typography>
