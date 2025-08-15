@@ -20,6 +20,8 @@ import SubprocesoRecibimiento from "./SubprocesoRecibimiento/SubprocesoRecibimie
 import Interconsulta from "./Interconsulta/Interconsulta";
 import Epicrisis from "./Epicrisi/Epicrisis";
 import Transferencia from "./Transferencia/Transferencia";
+import CertificadoMedico from "./CertificadoMedico/CertificadoMedico";
+import ConsultaExterna from "./ConsultaExterna/ConsultaExterna";
 
 
 interface OrdenesProps {
@@ -95,6 +97,8 @@ interface OrdenesProps {
             <Tab label="INTERCONSULTA" />
             <Tab label="EPICRISIS" />
             <Tab label="TRANSFERENCIA" />
+            <Tab label="CONSULTA EXTERNA" />
+            <Tab label="CERTIFICADO MÉDICO" />
           </Tabs>
         </Box>
         <Box sx={{ minHeight: "400px" }}>
@@ -108,7 +112,9 @@ interface OrdenesProps {
           {value === 7 && <SubprocesoRecibimiento />}
           {value === 8 && <Interconsulta />}
           {value === 9 && <Epicrisis />}
-          {value === 10 && <Transferencia />}       
+          {value === 10 && <Transferencia />}
+          {value === 11 && <ConsultaExterna />}
+          {value === 12 && <CertificadoMedico />}
         </Box>
       </DialogContent>
       <DialogActions sx={{ background: "#F4F8FB", pb: 2, pt: 1 }}>

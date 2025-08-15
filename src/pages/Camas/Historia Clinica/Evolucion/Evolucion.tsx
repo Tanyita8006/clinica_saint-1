@@ -732,40 +732,6 @@ export default function Evolucion() {
               </AccordionDetails>
             </Accordion>
 
-            {/* Datos del Médico */}
-            <Box
-              sx={{ mt: 2, p: 2, backgroundColor: "#f8f9fa", borderRadius: 1 }}
-            >
-              <Typography
-                sx={{ fontWeight: "bold", fontSize: "0.9rem", mb: 1 }}
-              >
-                DATOS DEL MÉDICO RESPONSABLE:
-              </Typography>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-                <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 40%" } }}>
-                  <TextField
-                    label="NOMBRE Y ESPECIALIDAD"
-                    value={`${evolucionActual.medico.nombre} - ${evolucionActual.medico.especialidad}`}
-                    disabled
-                    size="small"
-                    fullWidth
-                    InputLabelProps={{ sx: { fontSize: "0.8rem" } }}
-                    InputProps={{ sx: { fontSize: "0.8rem" } }}
-                  />
-                </Box>
-                <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 32%" } }}>
-                  <TextField
-                    label="FIRMA"
-                    value={evolucionActual.medico.firma}
-                    disabled
-                    size="small"
-                    fullWidth
-                    InputLabelProps={{ sx: { fontSize: "0.8rem" } }}
-                    InputProps={{ sx: { fontSize: "0.8rem" } }}
-                  />
-                </Box>
-              </Box>
-            </Box>
           </CardContent>
         </Card>
 

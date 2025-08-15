@@ -4,13 +4,9 @@ import {
     Paper,
 } from "@mui/material";
 import DatosPacienteI from "./DatosPacienteI/DatosPacienteI";
-import Interconsulta from "../Interconsulta";
 import ResumenCritico from "./ResumenCritico/ResumenCritico";
-import Diagnostico from "../Solicitud/Diagnostico/Diagnostico";
 import PlanDiagnostico from "./PlanDiagnostico/PlanDiagnostico";
 import PlanTerapeutico from "./PlanTerapeutico/PlanTerapeutico";
-import ProfesionalResponsable from "../Solicitud/ProfesionalResponsable/ProfesionalResponsable";
-import ProfesionalResponsableI from "./ProfesionalResponsable/ProfesionalResponsableI";
 import InterconsultaI from "./Interconsulta/Interconsulta";
 import DiagnosticoI from "./Diagnostico/DiagnosticoI";
 
@@ -67,10 +63,7 @@ export default function Informe() {
             <TabPanel value={tabValue} index={0}>
                 <PlanTerapeutico />
             </TabPanel>
-            <TabPanel value={tabValue} index={0}>
-                <ProfesionalResponsableI />
-            </TabPanel>
-            
+           
 
 
         </Paper>

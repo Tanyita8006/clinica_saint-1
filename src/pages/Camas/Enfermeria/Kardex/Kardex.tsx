@@ -25,6 +25,10 @@ import {
 import MedicationIcon from '@mui/icons-material/Medication';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import {
+  Print as PrintIcon,
+  Assignment as FormIcon,
+} from "@mui/icons-material";
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
@@ -40,6 +44,7 @@ interface MedicamentoData {
   dosis: string;
   via: string;
   cadaCuantasHoras: string;
+  cantidad: string; 
   frecuencia: string;
   horaInicio: string;
 }
@@ -69,6 +74,7 @@ export default function Medicamento() {
     medicamentos: [],
     dosis: '',
     via: '',
+    cantidad: '',
     cadaCuantasHoras: '',
     frecuencia: '',
     horaInicio: '',
@@ -190,6 +196,7 @@ export default function Medicamento() {
       medicamentos: [],
       dosis: '',
       via: '',
+      cantidad: '',
       cadaCuantasHoras: '',
       frecuencia: '',
       horaInicio: '',
@@ -202,19 +209,53 @@ export default function Medicamento() {
 
     const fechaRegistro = new Date().toLocaleString('es-EC');
 
-    // Por cada medicamento seleccionado, crear una fila de ingreso
-    const nuevosMedicamentos: MedicamentoRegistrado[] = medicamentoData.medicamentos.map((med, idx) => ({
-      ...medicamentoData,
-      medicamentos: [med],
-      id: Date.now() + idx,
-      fechaRegistro,
-      estado: 'ACTIVO',
-      responsable: usuarioLogueado,
-      esTermino: false,
-    }));
+    // cantidad por medicamento (si no viene o es inválida, usar 1)
+    const qtyPerMed = Math.max(1, Math.floor(Number(medicamentoData.cantidad) || 1));
+
+    // helpers para fecha/hora
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const parseFechaDDMMYYYY = (f: string) => {
+      // espera 'DD/MM/YYYY'
+      const parts = (f || '').split('/');
+      if (parts.length !== 3) return new Date();
+      const d = Number(parts[0]), m = Number(parts[1]) - 1, y = Number(parts[2]);
+      return new Date(y, m, d);
+    };
+
+    const baseFecha = parseFechaDDMMYYYY(medicamentoData.fecha || new Date().toLocaleDateString('es-EC'));
+    const [baseH, baseM] = (medicamentoData.horaInicio || '00:00').split(':').map(x => Number(x || 0));
+    const intervaloHoras = Number(medicamentoData.cadaCuantasHoras) || 0;
+
+    // Por cada medicamento seleccionado, crear 'qtyPerMed' filas con hora sumada por cada repetición
+    const nuevosMedicamentos: MedicamentoRegistrado[] = [];
+    medicamentoData.medicamentos.forEach((med, idx) => {
+      for (let j = 0; j < qtyPerMed; j++) {
+        // calcular nueva fecha/hora sumando j * intervaloHoras
+        const nuevaFecha = new Date(baseFecha);
+        const horasASumar = intervaloHoras ? j * intervaloHoras : 0;
+        nuevaFecha.setHours(baseH + horasASumar, baseM, 0, 0);
+
+        const horaStr = `${pad(nuevaFecha.getHours())}:${pad(nuevaFecha.getMinutes())}`;
+        const fechaStr = nuevaFecha.toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        nuevosMedicamentos.push({
+          ...medicamentoData,
+          medicamentos: [med],
+          id: Date.now() + idx * 100 + j,
+          fechaRegistro,
+          estado: 'ACTIVO',
+          responsable: usuarioLogueado,
+          esTermino: false,
+          // sobrescribir fecha y horaInicio para esta fila
+          fecha: fechaStr,
+          horaInicio: horaStr,
+        });
+      }
+    });
 
     setMedicamentosRegistrados(prev => [...prev, ...nuevosMedicamentos]);
-    setSuccessMessage('Medicamento(s) registrado(s) correctamente');
+    setSuccessMessage(`${nuevosMedicamentos.length} fila(s) registrada(s) correctamente`);
     limpiarFormulario();
     setErrorMessage('');
     setTimeout(() => {
@@ -250,6 +291,7 @@ export default function Medicamento() {
       medicamentos: medicamento.medicamentos,
       dosis: medicamento.dosis,
       via: medicamento.via,
+      cantidad: medicamento.cantidad,
       cadaCuantasHoras: medicamento.cadaCuantasHoras,
       frecuencia: medicamento.frecuencia,
       horaInicio: medicamento.horaInicio,
@@ -259,23 +301,6 @@ export default function Medicamento() {
     setSuccessMessage('');
   };
 
-  const handleEliminar = (id: number) => {
-    if (window.confirm('¿Está seguro de eliminar este medicamento?')) {
-      setMedicamentosRegistrados(prev => prev.filter(med => med.id !== id && med.idIngreso !== id));
-      setSuccessMessage('Medicamento eliminado correctamente');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    }
-  };
-
-  const cambiarEstado = (id: number, nuevoEstado: 'ACTIVO' | 'SUSPENDIDO' | 'COMPLETADO') => {
-    setMedicamentosRegistrados(prev =>
-      prev.map(med =>
-        med.id === id ? { ...med, estado: nuevoEstado } : med
-      )
-    );
-    setSuccessMessage(`Medicamento ${nuevoEstado.toLowerCase()}`);
-    setTimeout(() => setSuccessMessage(''), 3000);
-  };
 
   // Cambia el estado a 'SUSPENDIDO' y colorea la fila de rojo
   const handleSuspender = (id: number) => {
@@ -298,28 +323,7 @@ export default function Medicamento() {
     return '#ECECEC'; // gris claro
   };
 
-  const getViaCompleta = (codigo: string) => {
-    const via = viasAdministracion.find(v => v.codigo === codigo);
-    return via ? `${via.codigo}: ${via.nombre}` : codigo;
-  };
 
-  const getEstadoColor = (estado: string) => {
-    switch (estado) {
-      case 'ACTIVO': return 'success';
-      case 'SUSPENDIDO': return 'warning';
-      case 'COMPLETADO': return 'info';
-      default: return 'default';
-    }
-  };
-
-  const getResponsableInfo = (responsableCompleto: string) => {
-    if (!responsableCompleto) return { nombre: '', cargo: '' };
-    const partes = responsableCompleto.split(' - ');
-    return {
-      nombre: partes[0] || '',
-      cargo: partes[1] || ''
-    };
-  };
 
   const handleLimpiar = () => {
     limpiarFormulario();
@@ -502,6 +506,41 @@ export default function Medicamento() {
             />
           </Box>
 
+            <Box sx={{ flex: '1 1 150px', minWidth: '120px' }}>
+            <TextField
+              label="REPETICION *"
+              value={medicamentoData.cantidad}
+              onChange={(e) => {
+                handleInputChange('cantidad', e.target.value);
+                const frecuenciaAuto = calcularFrecuenciaAutomatica(e.target.value);
+                if (frecuenciaAuto) {
+                  handleInputChange('frecuencia', frecuenciaAuto);
+                }
+              }}
+              {...textFieldProps}
+              InputProps={{
+                ...textFieldProps.InputProps,
+              }}
+            />
+          </Box>
+           <Box sx={{ flex: '1 1 150px', minWidth: '120px' }}>
+            <TextField
+              label="CANTIDAD *"
+              value={medicamentoData.cantidad}
+              onChange={(e) => {
+                handleInputChange('cantidad', e.target.value);
+                const frecuenciaAuto = calcularFrecuenciaAutomatica(e.target.value);
+                if (frecuenciaAuto) {
+                  handleInputChange('frecuencia', frecuenciaAuto);
+                }
+              }}
+              {...textFieldProps}
+              InputProps={{
+                ...textFieldProps.InputProps,
+              }}
+            />
+          </Box>
+
           <Box sx={{ flex: '2 1 300px', minWidth: '200px' }}>
             <TextField
               label="FRECUENCIA"
@@ -578,7 +617,7 @@ export default function Medicamento() {
             </TableHead>
             <TableBody>
               {medicamentosRegistrados
-                .sort((a, b) => (a.esTermino ? 1 : -1)) // Mostrar ingreso antes que término
+                .sort((a) => (a.esTermino ? 1 : -1)) // Mostrar ingreso antes que término
                 .map((medicamento) => {
                   const rowColor = getRowColor(medicamento);
                   const tieneTermino = medicamentosRegistrados.some(
@@ -678,6 +717,46 @@ export default function Medicamento() {
           </Table>
         </TableContainer>
       </Paper>
+      <Divider sx={{ mt: 4, mb: 2 }} />
+      
+            <Box sx={{ display: "flex", justifyContent: "center", gap: 1.5, flexWrap: "wrap" }}>
+              <Button
+                variant="contained"
+                startIcon={<SaveIcon />}
+                size="small"
+                sx={{ 
+                  background: "#1A3C6D", 
+                  "&:hover": { background: "#274472" },
+                  fontSize: "0.8rem" 
+                }}
+              >
+                GUARDAR
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<EditIcon />}
+                size="small"
+                sx={{ 
+                  color: "#1A3C6D", 
+                  borderColor: "#1A3C6D",
+                  fontSize: "0.8rem"
+                }}
+              >
+                EDITAR
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<PrintIcon />}
+                size="small"
+                sx={{ 
+                  color: "#1A3C6D", 
+                  borderColor: "#1A3C6D",
+                  fontSize: "0.8rem"
+                }}
+              >
+                IMPRIMIR
+              </Button>
+            </Box>
     </Box>
   );
 }

@@ -28,7 +28,6 @@ import ConstantesVitales from "./ConstantesVitales/ConstantesVitales";
 import ExamenFisico from "./ExameFisico/ExamenFisico";
 import DiagnosticoInicial from "./DiagnosticoInicial/DiagnosticoInicial";
 import TratamientoInicial from "./TratamientoInicial/TratamientoInicial";
-import ProfesionalResponsable from "./ProfesionalResponsable/ProfesionalResponsable";
 
 
 
@@ -128,7 +127,6 @@ export default function SubprocesoRecibimiento() {
                     <Tab label="EXAMEN FISICO" {...a11yProps(9)} />
                     <Tab label="DIAGNOSTICO INICIAL" {...a11yProps(10)} />
                     <Tab label="TRATAMIENTO INICIAL" {...a11yProps(11)} />
-                    <Tab label="PROFESIONAL RESPONSABLE" {...a11yProps(12)} />
 
                 </Tabs>
             </Box>
@@ -175,9 +173,7 @@ export default function SubprocesoRecibimiento() {
             <TabPanel value={tabValue} index={11}>
                 <TratamientoInicial />
             </TabPanel>
-            <TabPanel value={tabValue} index={12}>
-                <ProfesionalResponsable />
-            </TabPanel>
+        
 
             <Divider sx={{ mt: 4, mb: 2 }} />
 

@@ -16,7 +16,6 @@ import HallazgosRelevantes from "./HallazgosRelevantes/HallazgosRelevantes";
 import ResumenTratamiento from "./ResumenTratamiento/ResumenTratamiento";
 import AltaEgreso from "./AltaEgreso/AltaEgreso";
 import DiagnosticoAlta from "./DiagnosticoAlta/DiagnosticoAlta";
-import DatosProfesional from "../ProtocoloQuirurgico/ProfecionalResponsable/Responsable";
 import MedicoTratante from "./MedicosTrantes/MedicoTratante";
 import IndicacionesAlta from "./IndicacionesAlta/IndicacionesAlta";
 
@@ -100,9 +99,7 @@ export default function Informe() {
             <TabPanel value={tabValue} index={0}>
                 <MedicoTratante />
             </TabPanel>
-            <TabPanel value={tabValue} index={0}>
-                <DatosProfesional />
-            </TabPanel>
+          
 
 
         </Paper>

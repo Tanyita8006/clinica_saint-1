@@ -26,7 +26,6 @@ import TiemposQuirurgicosForm from "./TiemposQuirurgicos/TiemposQuirurgicosForm"
 import ComplicacionesForm from "./Complicaciones/ComplicacionesForm";
 import ExamenesHispForm from "./ExamenesHispatologicos/ExamenesHispForm";
 import DiagramaProcedimiento from "./Diagrama/DiagramaProcedimiento";
-import DatosProfesional from "./ProfecionalResponsable/Responsable";
 
 // Interfaz para las propiedades del panel de pestañas
 interface TabPanelProps {
@@ -116,7 +115,6 @@ export default function ProtocoloQuirurgico() {
           <Tab label="COMPLICACIONES" {...a11yProps(4)} />
           <Tab label="EXÁMENES HISTOPATOLÓGICOS" {...a11yProps(5)} />
           <Tab label="DIAGRAMA" {...a11yProps(6)} />
-          <Tab label="DATOS DEL PROFESIONAL" {...a11yProps(7)} />
         </Tabs>
       </Box>
 
@@ -152,9 +150,6 @@ export default function ProtocoloQuirurgico() {
         <DiagramaProcedimiento />
       </TabPanel>
 
-      <TabPanel value={tabValue} index={7}>
-        <DatosProfesional />
-      </TabPanel>
 
       {/* Botones de acción */}
       <Divider sx={{ mt: 4, mb: 2 }} />

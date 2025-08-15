@@ -105,36 +105,7 @@ export const EnfermeriaMenu: React.FC<OrdenesProps> = ({ open, onClose }) => {
           {value === 8 && <DrenesQuirurgicos />}
         </Box>
         {/* Botones de navegación */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-          <Button
-            variant="outlined"
-            onClick={handlePrev}
-            disabled={value === 0}
-            sx={{
-              color: "#1A3C6D",
-              borderColor: "#1A3C6D",
-              fontWeight: "bold",
-              textTransform: "none",
-              px: 4,
-            }}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleNext}
-            disabled={value === 5}
-            sx={{
-              color: "#1A3C6D",
-              borderColor: "#1A3C6D",
-              fontWeight: "bold",
-              textTransform: "none",
-              px: 4,
-            }}
-          >
-            Siguiente
-          </Button>
-        </Box>
+       
       </DialogContent>
       <DialogActions sx={{ background: "#F4F8FB", pb: 2, pt: 1 }}>
         <Button

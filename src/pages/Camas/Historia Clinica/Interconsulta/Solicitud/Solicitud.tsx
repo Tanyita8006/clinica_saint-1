@@ -10,7 +10,6 @@ import Caracteristicas from "./Caracteristicas/Caracteristicas";
 import CuadroClinico from "./CuadroClinico/CuadroClinico";
 import ExamenesProcedimientos from "./ExamenesProcedimientos/ExamenesProcedimientos";
 import PlanTerapeutico from "./PlanTerapeutico/PlanTerapeutico";
-import ProfesionalResponsable from "./ProfesionalResponsable/ProfesionalResponsable";
 import Diagnostico from "./Diagnostico/Diagnostico";
 
 
@@ -71,9 +70,7 @@ export default function Solicitud() {
             <TabPanel value={tabValue} index={0}>
                 <PlanTerapeutico />
             </TabPanel>
-            <TabPanel value={tabValue} index={0}>
-                <ProfesionalResponsable />
-            </TabPanel>
+         
 
 
         </Paper>

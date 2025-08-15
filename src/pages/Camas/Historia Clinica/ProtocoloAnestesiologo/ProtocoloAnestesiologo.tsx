@@ -34,7 +34,6 @@ import Incidentes from "./Incidentes/Incidentes";
 import ResultadoExamenes from "./ResultadoExamenes/ResultadoExamenes";
 import Observacion from "./Observacion/Observacion";
 import CondicionEgreso from "./CondicionEgreso/CondicionEgreso";
-import ProfesionalResponsable from "./ProfesionalResponsable/ProfesionalResponsable";
 
 // Importar los componentes de formularios existentes
 
@@ -137,7 +136,6 @@ export default function ProtocoloAnestesiologo() {
           <Tab label="RESULTADO DE EXÁMENES" {...a11yProps(14)} />
           <Tab label="OBSERVACIONES" {...a11yProps(15)} />
           <Tab label="CONDICION DE EGRESO" {...a11yProps(16)} />
-          <Tab label="DATOS DEL PROFESIONAL RESPONSABLE" {...a11yProps(17)} />
 
 
         </Tabs>
@@ -212,9 +210,7 @@ export default function ProtocoloAnestesiologo() {
         <CondicionEgreso />
       </TabPanel>
 
-      <TabPanel value={tabValue} index={17}>
-        <ProfesionalResponsable />
-      </TabPanel>
+      
       
       <Divider sx={{ mt: 4, mb: 2 }} />
 

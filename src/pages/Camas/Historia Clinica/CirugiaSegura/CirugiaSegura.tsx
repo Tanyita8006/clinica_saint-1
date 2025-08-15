@@ -22,8 +22,6 @@ import DatosCirugia from "./DatosCirugia/DatosCirugia";
 import Entrada from "./Entrada/Entrada";
 import PausaQuirurgica from "./PausaQuirurgica/PausaQuirurgica";
 import Salida from "./Salida/Salida";
-import ProfesionalResponsable from "../ProtocoloAnestesiologo/ProfesionalResponsable/ProfesionalResponsable";
-import ProfesionalResponsableSG from "./ProfesionalResponsable/ProfesionalResponsable";
 
 
 // Importar los componentes de formularios existentes
@@ -138,9 +136,7 @@ export default function CirugiaSegura() {
        <TabPanel value={tabValue} index={4}>
         <Salida />
       </TabPanel>
-       <TabPanel value={tabValue} index={5}>
-        <ProfesionalResponsableSG />
-      </TabPanel>
+     
       {/* <TabPanel value={tabValue} index={0}>
         <DatosEstablecimiento />
       </TabPanel>
